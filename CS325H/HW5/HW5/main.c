@@ -1,6 +1,7 @@
 //
 //  main.c
-//  HW5
+//  divide and conquer algorithm (using only three multiples)
+//  for multiplying polynomials
 //
 //  Created by Vinay Bikkina on 2/11/13.
 //  Copyright (c) 2013 Vinay Bikkina. All rights reserved.
