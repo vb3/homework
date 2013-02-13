@@ -18,32 +18,48 @@ int *polyMult(int *p, int *q, int n);
 int main(int argc, const char * argv[])
 {
     int *a, *b, *c = NULL;
-    int i;
+    int i, j;
     int order = atoi(argv[1]) + 1;
     
     a = (int *) calloc(order, sizeof(int));
     b = (int *) calloc(order, sizeof(int));
     
     //User Input
-    printf("Enter the coefficients of A with powers in ascending order:\n");
+    printf("Enter the coefficients of A with powers in decending order:\n");
     for (i = 0; i < order; i++)
         scanf("%d", &a[i]);
-    printf("Enter the coefficients of B with powers in ascending order:\n");
+    printf("Enter the coefficients of B with powers in decending order:\n");
     for (i = 0; i < order; i++)
         scanf("%d", &b[i]);
     
-    //Compute
+    //Compute Iterative
+	int *result = calloc((order-1)*2, sizeof(int));
+    
+	for(i=0; i<order; i++) {
+		for(j=0; j<order; j++)
+			result[i+j] +=a[i] * b[j];
+    }
+    //Print results Iterative
+    printf("Iterative Results:\n");
+    for (i = 0; i <= order*2; i++) {
+        if (i == (order-1)*2 && result[i] != 0)
+            printf("%c %d ", '+', result[i]);
+        else if(result[i] != 0)
+            printf("%c %dx^%d ", '+', result[i], ((order-1)*2)-i);
+    }
+    printf("\n");
+    
+    //Compute DivCon
     //c = polyMult(a, b, order+1);
     c = poly_multi_divcon(a, b, order);
-    
-    //Print results
+    //Print results DivCon
+    printf("DivCon Results:\n");
     for (i = 2*(order+1); i >= 0; i--) {
         if (i == 0 && c[i] != 0)
             printf("%c %d ", '+', c[i]);
         else if(c[i] != 0)
             printf("%c %dx^%d ", '+', c[i], i);
     }
-    
     return 0;
 }
 
