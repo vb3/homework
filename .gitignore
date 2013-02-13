@@ -13,4 +13,6 @@ build/
 DerivedData/
 # Misc
 .svn
+*.1
+*.xcodeproj
 .DS_Store
