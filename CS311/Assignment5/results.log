@@ -1,0 +1,398 @@
+
+Results for 1 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	9m19.330s
+user	5m2.246s
+sys	0m1.555s
+
+
+Results for 2 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	1m42.720s
+user	3m8.911s
+sys	0m0.486s
+
+
+Results for 4 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	1m28.519s
+user	4m59.952s
+sys	0m0.526s
+
+
+Results for 8 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	1m28.959s
+user	8m51.799s
+sys	0m0.715s
+
+
+Results for 16 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	1m30.377s
+user	9m3.854s
+sys	0m0.927s
+
+
+Results for 32 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	1m28.805s
+user	9m16.856s
+sys	0m0.643s
+
+
+Results for 64 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	1m20.370s
+user	8m39.203s
+sys	0m0.853s
+
+
+Results for 128 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	1m10.950s
+user	7m35.777s
+sys	0m0.597s
+
+
+Results for 256 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	0m27.836s
+user	1m42.388s
+sys	0m1.339s
+
+
+Results for 512 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	0m22.882s
+user	1m9.281s
+sys	0m0.795s
+
+
+Results for 1024 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Cannot create the thread.: Resource temporarily unavailable
+
+real	0m4.215s
+user	0m20.250s
+sys	0m0.713s
+
+
+Results for 2048 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Cannot create the thread.: Resource temporarily unavailable
+
+real	0m6.223s
+user	0m36.078s
+sys	0m0.718s
+
+
+Results for 4096 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280223 primes found.
+
+real	0m22.662s
+user	1m7.416s
+sys	0m0.922s
+
+
+Results for 8192 number of t
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280272 primes found.
+
+real	0m23.173s
+user	1m10.471s
+sys	0m1.142s
+
+
+
+Results for 1 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	4m3.338s
+user	4m2.203s
+sys	0m0.927s
+
+
+Results for 2 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	3m22.506s
+user	4m42.072s
+sys	0m0.980s
+
+
+Results for 4 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	2m30.780s
+user	7m0.128s
+sys	0m0.659s
+
+
+Results for 8 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	2m24.346s
+user	8m29.691s
+sys	0m2.289s
+
+
+Results for 16 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	3m34.274s
+user	9m15.749s
+sys	0m0.864s
+
+
+Results for 32 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	2m38.598s
+user	9m46.714s
+sys	0m1.462s
+
+
+Results for 64 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	1m44.481s
+user	9m10.060s
+sys	0m1.756s
+
+
+Results for 128 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	1m16.055s
+user	7m30.054s
+sys	0m1.271s
+
+
+Results for 256 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	0m26.906s
+user	1m39.342s
+sys	0m0.886s
+
+
+Results for 512 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...Done.
+Counting primes...
+Done.
+
+203280221 primes found.
+
+real	0m22.927s
+user	1m9.139s
+sys	0m0.940s
+
+
+Results for 1024 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...forking error: Resource temporarily unavailable
+
+real	0m8.190s
+user	0m1.149s
+sys	0m0.634s
+
+
+Results for 2048 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...forking error: Resource temporarily unavailable
+
+real	0m4.997s
+user	0m1.114s
+sys	0m0.648s
+
+
+Results for 4096 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...forking error: Resource temporarily unavailable
+
+real	0m3.476s
+user	0m1.134s
+sys	0m0.623s
+
+
+Results for 8192 number of p
+Initial check...Done.
+Initialize Shared Memory...Done.
+Pre-Calc Ks...Done.
+Running Calculations...forking error: Resource temporarily unavailable
+
+real	0m2.802s
+user	0m1.125s
+sys	0m0.720s
+
+

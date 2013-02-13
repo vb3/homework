@@ -1,0 +1,14 @@
+!<arch>
+docA.txt/       1350958823  43654 14454 100660  19        `
+This is Document A
+
+docB.txt/       1350958850  43654 14454 100660  28        `
+This is a Bigger Document B
+t1.txt/         1350969371  43654 14454 100660  45        `
+testing document 1
+line 2 o testing doucment
+
+t2.txt/         1350969351  43654 14454 100660  52        `
+tin docuemnt 2
+with random lines
+when make it even.

@@ -1,0 +1,7 @@
+Vinay Bikkina
+
+Amortized Analysis of the Dynamic Array (Written)
+
+1. 56
+2. 260
+3. assuming that the initial capacity of the array is N/2, if you did a pop followed by a push, the operation would cost O(N^2) total cost. This can be avoided by revising the array's shrinking policy to shrink (on Pop only) its capacity by half when the array is quarter full or less. 
