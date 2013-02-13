@@ -22,20 +22,19 @@ int main(int argc, const char * argv[])
     
     a = (int *) calloc(order, sizeof(int));
     b = (int *) calloc(order, sizeof(int));
-        
-    printf("Enter the coefficients of A with powers in ascending order:\n");
     
+    //User Input
+    printf("Enter the coefficients of A with powers in ascending order:\n");
     for (i = 0; i < order+1; i++)
         scanf("%d", &a[i]);
-    
     printf("Enter the coefficients of B with powers in ascending order:\n");
-    
-    for (i = 0; i < order+1; i++) {
+    for (i = 0; i < order+1; i++)
         scanf("%d", &b[i]);
-    }
     
+    //Compute
     c = poly_multi_divcon(a, b, order+1);
     
+    //Print results
     for (i = 2*(order+1); i >= 0; i--) {
         if (i == 0 && c[i] != 0)
             printf("%c %d ", '+', c[i]);
@@ -63,39 +62,30 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     
     int *R = poly_multi_divcon(P, Q, d);        //Mult P1*Q1
     int *S = poly_multi_divcon(PP, QQ, d);      //Mult (P1+P2)(Q1+Q2)
-    free(PP); free(QQ);
     int *T = poly_multi_divcon(&P[d], &Q[d], d);//Mult P2*Q2
-
-    //int *temp = array_op(S, R, dd, dd, 0);        //S-R
-    //int *temp2 = array_op(temp, T, dd, dd, 0);    //(S-R)-T
-    //free(temp);
     
-    int *outt = calloc(n*2, sizeof(int));
+    int *outt = calloc((n*2)+1, sizeof(int));
     
     //x^2d(R) + x^d(S-R-T) + T
-    for (i = 0; i<(d==1?0:d); i++) { //<=?
+    for (i = 0; i<=d; i++) {
         outt[i] += T[i];
         outt[i+d] += S[i] - R[i] - T[i];
         outt[i+dd] += R[i];
     }
     
-    free(R); free(S); free(T); //free(temp2);
+    free(R); free(S); free(T); free(PP); free(QQ);
     return outt;
 }
 
+/* Adds or Subs A and B. add=1 for add, add=0 for sub */
 int *array_op(int *A, int *B, int len, int add)
 {
     int i;
-    
     int *out = calloc(len, sizeof(int));
     
-    for (i=0; i<len; i++) {
-        if (add) {
-            out[i] = A[i] + B[i];
-        } else {
-            out[i] = A[i] - B[i];
-        }
-    }
+    for (i=0; i<len; i++)
+        if (add)    out[i] = A[i] + B[i];
+        else        out[i] = A[i] - B[i];
     
     return out;
 }
