@@ -99,7 +99,7 @@ int *array_op(int *A, int *B, int lenA, int lenB)
     return out;
 }
 
-// http://www.cs.vassar.edu/~cs241/teneyck/divideandconquer.pdf
+// From http://www.cs.vassar.edu/~cs241/teneyck/divideandconquer.pdf
 int *polyMult(int *p, int *q, int n) {
     if (n == 1) {
         int *out = malloc(sizeof(int));
