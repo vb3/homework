@@ -50,7 +50,7 @@ int main(int argc, const char * argv[])
     printf("\n");
     
     //Compute DivCon
-    //c = polyMult(a, b, order+1);
+    //c = polyMult(a, b, order);
     c = poly_multi_divcon(a, b, order);
     //Print results DivCon
     printf("DivCon Results:\n");
@@ -78,7 +78,7 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     int *PP = array_op(P, &P[d-n%2], d-n%2, d);      //add P1 and P2
     int *QQ = array_op(Q, &Q[d-n%2], d-n%2, d);      //add Q1 and Q2
     
-    int *R = poly_multi_divcon(&P[d], &Q[d], d);        //Mult P2*Q2
+    int *R = poly_multi_divcon(&P[d-n%2], &Q[d-n%2], d);        //Mult P2*Q2
     int *S = poly_multi_divcon(PP, QQ, d);      //Mult (P1+P2)(Q1+Q2)
     int *T = poly_multi_divcon(P, Q, d);        //Mult P1*Q1
     
@@ -100,10 +100,10 @@ int *poly_multi_divcon(int *P, int *Q, int n)
 int *array_op(int *A, int *B, int lenA, int lenB)
 {
     int i;
-    int lenC = (lenA<=lenB?lenA:lenB);
-    int *out = calloc(lenC, sizeof(int));
+    int len_min = (lenA<=lenB?lenA:lenB);
+    int *out = calloc((lenA>=lenB?lenA:lenB), sizeof(int));
     
-    for (i=0; i<lenC; i++)
+    for (i=0; i<len_min; i++)
         out[i] = A[i] + B[i];
     
     if (lenA>lenB)
