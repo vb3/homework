@@ -15,12 +15,11 @@ int *poly_multi_divcon(int *P, int *Q, int n);
 
 int main(int argc, const char * argv[])
 {
-    int *a, *b, *c = NULL;
-    int i, j;
     int order = atoi(argv[1]) + 1;
-    
-    a = (int *) calloc(order, sizeof(int));
-    b = (int *) calloc(order, sizeof(int));
+    int *a = calloc(order, sizeof(int));
+    int *b = calloc(order, sizeof(int));
+    int *c = NULL;
+    int i, j;
     
     //User Input
     printf("Enter the coefficients of A with powers in decending order:\n");
@@ -32,14 +31,13 @@ int main(int argc, const char * argv[])
     
     //Compute Iterative
 	int *result = calloc((order-1)*2, sizeof(int));
-    
 	for(i=0; i<order; i++) {
 		for(j=0; j<order; j++)
 			result[i+j] +=a[i] * b[j];
     }
     //Print results Iterative
     printf("Iterative Results:\n");
-    for (i = 0; i < order*2; i++) {
+    for (i = 0; i < (order*2)-1; i++) {
         if (i == (order-1)*2 && result[i] != 0)
             printf("%c %d ", '+', result[i]);
         else if(result[i] != 0)
@@ -70,18 +68,12 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     
     int i;
     int d = n/2 + n%2;
-    int dd = d*2;
     
     //split p and q
-    int p2[d];
-    int q2[d];
+    int p2[d], q2[d], p1[d-n%2], q1[d-n%2];
     for (int i = 0; i < d; i++) {
         p2[i] = P[i];
         q2[i] = Q[i];
-    }
-    int p1[d-n%2];
-    int q1[d-n%2];
-    for (int i = 0; i < d; i++) {
         p1[i] = P[i+d];
         q1[i] = Q[i+d];
     }
@@ -97,9 +89,10 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     
     //x^2d(R) + x^d(S-R-T) + T
     for (i = 0; i<d; i++) { //if d=1 then only need to do loop once, otherwise we get artifacts
+        //printf("n= %d i=%d T[i]=%d\t\t S-R-T=%d\t\t R[i]=%d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
         outt[i] += R[i];
         outt[i+d] += S[i] - R[i] - T[i];
-        outt[i+dd] += T[i];
+        outt[i+(d*2)] += T[i];
     }
     
     free(R); free(S); free(T); free(PP); free(QQ);
