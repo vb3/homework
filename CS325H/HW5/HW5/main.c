@@ -85,10 +85,12 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     int *outt = calloc(((n+1)*2), sizeof(int));
     
     //x^2d(R) + x^d(S-R-T) + T
-    for (i = 0; i<=(d==1?0:d); i++) { //if d=1 then only need to do loop once, otherwise we get artifacts 
+    for (i = 0; i<=d; i++) { //if d=1 then only need to do loop once, otherwise we get artifacts
+        printf("n= %d i=%d T[i]=%d\t\t S-R-T=%d\t\t R[i]=%d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
         outt[i] += T[i];
         outt[i+d] += S[i] - R[i] - T[i];
         outt[i+dd] += R[i];
+        if (d==1) break;
     }
     
     free(R); free(S); free(T); free(PP); free(QQ);
