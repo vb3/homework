@@ -41,7 +41,7 @@ int main(int argc, const char * argv[])
     }
     //Print results Iterative
     printf("Iterative Results:\n");
-    for (i = 0; i <= order*2; i++) {
+    for (i = 0; i < order*2; i++) {
         if (i == (order-1)*2 && result[i] != 0)
             printf("%c %d ", '+', result[i]);
         else if(result[i] != 0)
@@ -54,13 +54,13 @@ int main(int argc, const char * argv[])
     c = poly_multi_divcon(a, b, order);
     //Print results DivCon
     printf("DivCon Results:\n");
-    for (i = 2*(order+1); i >= 0; i--) {
-        if (i == 0 && c[i] != 0)
-            printf("%c %d ", '+', c[i]);
-        else if(c[i] != 0)
-            printf("%c %dx^%d ", '+', c[i], i);
+    for (i = 0; i < order*2; i++) {
+        if (i == (order-1)*2 && result[i] != 0)
+            printf("%c %d ", '+', result[i]);
+        else if(result[i] != 0)
+            printf("%c %dx^%d ", '+', result[i], ((order-1)*2)-i);
     }
-    return 0;
+    printf("\n");
 }
 
 int *poly_multi_divcon(int *P, int *Q, int n)
@@ -74,23 +74,37 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     int i;
     int d = n/2 + n%2;
     int dd = d*2;
-
-    int *PP = array_op(P, &P[d-n%2], d-n%2, d);      //add P1 and P2
-    int *QQ = array_op(Q, &Q[d-n%2], d-n%2, d);      //add Q1 and Q2
     
-    int *R = poly_multi_divcon(&P[d-n%2], &Q[d-n%2], d);        //Mult P2*Q2
+    //split p and q
+    int p2[d];
+    int q2[d];
+    for (int i = 0; i < d; i++) {
+        p2[i] = P[i];
+        q2[i] = Q[i];
+    }
+    int p1[d-n%2];
+    int q1[d-n%2];
+    for (int i = 0; i < d; i++) {
+        p1[i] = P[i+d];
+        q1[i] = Q[i+d];
+    }
+
+    int *PP = array_op(p1, p2, d-n%2, d);      //add P1 and P2
+    int *QQ = array_op(q1, q2, d-n%2, d);      //add Q1 and Q2
+    
+    int *R = poly_multi_divcon(p2, q2, d);        //Mult P2*Q2
     int *S = poly_multi_divcon(PP, QQ, d);      //Mult (P1+P2)(Q1+Q2)
-    int *T = poly_multi_divcon(P, Q, d);        //Mult P1*Q1
+    int *T = poly_multi_divcon(p1, q1, d);        //Mult P1*Q1
     
     int *outt = calloc(((n+1)*2), sizeof(int));
     
     //x^2d(R) + x^d(S-R-T) + T
     for (i = 0; i<d; i++) { //if d=1 then only need to do loop once, otherwise we get artifacts
-        printf("n= %d i=%d T[i]=%d\t\t S-R-T=%d\t\t R[i]=%d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
+        //printf("n= %d i=%d T[i]=%d\t\t S-R-T=%d\t\t R[i]=%d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
         outt[i] += R[i];
         outt[i+d] += S[i] - R[i] - T[i];
         outt[i+dd] += T[i];
-        if (d==1) break;
+        //if (d==1) break;
     }
     
     free(R); free(S); free(T); free(PP); free(QQ);
