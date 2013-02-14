@@ -9,7 +9,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 
 int *array_op(int *A, int *B, int len, int add);
 int *poly_multi_divcon(int *P, int *Q, int n);
@@ -98,11 +97,9 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     
     //x^2d(R) + x^d(S-R-T) + T
     for (i = 0; i<d; i++) { //if d=1 then only need to do loop once, otherwise we get artifacts
-        //printf("n= %d i=%d T[i]=%d\t\t S-R-T=%d\t\t R[i]=%d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
         outt[i] += R[i];
         outt[i+d] += S[i] - R[i] - T[i];
         outt[i+dd] += T[i];
-        //if (d==1) break;
     }
     
     free(R); free(S); free(T); free(PP); free(QQ);
