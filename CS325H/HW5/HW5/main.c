@@ -16,13 +16,12 @@ int *poly_multi_divcon(int *P, int *Q, int n);
 
 int main(int argc, const char * argv[])
 {
-    int *a, *b, *c = NULL, *result = NULL;
+    int *a, *b, *c = NULL;
     int i, j;
     int order = atoi(argv[1]) + 1;
     
     a = (int *) calloc(order, sizeof(int));
     b = (int *) calloc(order, sizeof(int));
-    result = (int *) calloc((order-1)*2, sizeof(int));
     
     //User Input
     printf("Enter the coefficients of A with powers in decending order:\n");
@@ -33,6 +32,8 @@ int main(int argc, const char * argv[])
         scanf("%d", &b[i]);
     
     //Compute Iterative
+	int *result = calloc((order-1)*2, sizeof(int));
+    
 	for(i=0; i<order; i++) {
 		for(j=0; j<order; j++)
 			result[i+j] +=a[i] * b[j];
@@ -69,17 +70,23 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     }
     
     int i;
-    int d = n/2 + n%2;                      //new value of n for recursive call
-    int p1[d-n%2], q1[d-n%2], p2[d], q2[d]; //used for split R and Q
+    int d = n/2 + n%2;
+    int dd = d*2;
     
-    //split P and Q
-    for (i = 0; i < d; i++) {
-        p1[i] = P[i+d];
-        q1[i] = Q[i+d];
+    //split p and q
+    int p2[d];
+    int q2[d];
+    for (int i = 0; i < d; i++) {
         p2[i] = P[i];
         q2[i] = Q[i];
     }
-
+    int p1[d-n%2];
+    int q1[d-n%2];
+    for (int i = 0; i < d; i++) {
+        p1[i] = P[i+d];
+        q1[i] = Q[i+d];
+    }
+    
     int *PP = array_op(p1, p2, d-n%2, d);      //add P1 and P2
     int *QQ = array_op(q1, q2, d-n%2, d);      //add Q1 and Q2
     
@@ -91,9 +98,11 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     
     //x^2d(R) + x^d(S-R-T) + T
     for (i = 0; i<d; i++) { //if d=1 then only need to do loop once, otherwise we get artifacts
+        //printf("n= %d i=%d T[i]=%d\t\t S-R-T=%d\t\t R[i]=%d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
         outt[i] += R[i];
         outt[i+d] += S[i] - R[i] - T[i];
-        outt[i+(d*2)] += T[i];
+        outt[i+dd] += T[i];
+        //if (d==1) break;
     }
     
     free(R); free(S); free(T); free(PP); free(QQ);
@@ -109,13 +118,13 @@ int *array_op(int *A, int *B, int lenA, int lenB)
     for (i=0; i<len_min; i++)
         out[i] = A[i] + B[i];
     
-    if (lenA>lenB) {
+    if (lenA>lenB)
         for (i=lenB; i<lenA; i++)
             out[i] = A[i];
-    } else {
+    
+    if (lenA<lenB)
         for (i=lenA; i<lenB; i++)
             out[i] = B[i];
-    }
     
     return out;
 }
