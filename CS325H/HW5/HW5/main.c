@@ -81,14 +81,14 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     int *PP = array_op(p1, p2, d-n%2, d);      //add P1 and P2
     int *QQ = array_op(q1, q2, d-n%2, d);      //add Q1 and Q2
     
-    int *R = poly_multi_divcon(p2, q2, d);        //Mult P2*Q2
-    int *S = poly_multi_divcon(PP, QQ, d);      //Mult (P1+P2)(Q1+Q2)
-    int *T = poly_multi_divcon(p1, q1, d);        //Mult P1*Q1
+    int *R = poly_multi_divcon(p2, q2, d);     //Mult P2*Q2
+    int *S = poly_multi_divcon(PP, QQ, d);     //Mult (P1+P2)(Q1+Q2)
+    int *T = poly_multi_divcon(p1, q1, d);     //Mult P1*Q1
     
     int *outt = calloc(((n+1)*2), sizeof(int));
     
     //x^2d(R) + x^d(S-R-T) + T
-    for (i = 0; i<d; i++) { //if d=1 then only need to do loop once, otherwise we get artifacts
+    for (i = 0; i<d; i++) {
         //printf("n= %d i=%d T[i]=%d\t\t S-R-T=%d\t\t R[i]=%d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
         outt[i] += R[i];
         outt[i+d] += S[i] - R[i] - T[i];
@@ -108,13 +108,12 @@ int *array_op(int *A, int *B, int lenA, int lenB)
     for (i=0; i<len_min; i++)
         out[i] = A[i] + B[i];
     
-    if (lenA>lenB)
+    if (lenA>lenB){
         for (i=lenB; i<lenA; i++)
             out[i] = A[i];
-    
-    if (lenA<lenB)
+    } else {
         for (i=lenA; i<lenB; i++)
             out[i] = B[i];
-    
+    }
     return out;
 }
