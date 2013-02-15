@@ -78,8 +78,6 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     for (int i = 0; i < d; i++) {
         p2[i] = P[i];
         q2[i] = Q[i];
-    }
-    for (int i = 0; i < d; i++) {
         p1[i] = P[i+d];
         q1[i] = Q[i+d];
     }
@@ -94,7 +92,7 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     int *outt = calloc((n*2), sizeof(int));
     
     //x^2d(R) + x^d(S-R-T) + T
-    for (i = 0; i<=d+1; i++) {
+    for (i = 0; i<=n; i++) {
         //printf("n= %d i=%d T[i]=%7d S-R-T=%7d R[i]=%7d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
         outt[i] += R[i];
         outt[i+d] += S[i] - R[i] - T[i];
