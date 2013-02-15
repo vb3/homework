@@ -50,10 +50,10 @@ int main(int argc, const char * argv[])
     //Print results DivCon
     printf("DivCon Results:\n");
     for (i = 0; i < (order*2)-1; i++) {
-        if (i == (order-1)*2 && result[i] != 0)
-            printf("%c %d ", '+', result[i]);
-        else if(result[i] != 0)
-            printf("%c %dx^%d ", '+', result[i], ((order-1)*2)-i);
+        if (i == (order-1)*2 && c[i] != 0)
+            printf("%c %d ", '+', c[i]);
+        else if(c[i] != 0)
+            printf("%c %dx^%d ", '+', c[i], ((order-1)*2)-i);
     }
     printf("\n");
 }
@@ -61,35 +61,41 @@ int main(int argc, const char * argv[])
 int *poly_multi_divcon(int *P, int *Q, int n)
 {
     if (n == 1) {
-        int *out = malloc(sizeof(int));
+        int *out = calloc(2, sizeof(int));
         *out = P[0] * Q[0];
         return out;
     }
     
     int i;
-    int d = n/2 + n%2;
-    
+    int d = (n/2) + (n%2);
+
     //split p and q
-    int p2[d], q2[d], p1[d-n%2], q1[d-n%2];
+    int *p2 = calloc(d, sizeof(int));
+    int *q2 = calloc(d, sizeof(int));
+    int *p1 = calloc(d-(n%2), sizeof(int));
+    int *q1 = calloc(d-(n%2), sizeof(int));
+    
     for (int i = 0; i < d; i++) {
         p2[i] = P[i];
         q2[i] = Q[i];
+    }
+    for (int i = 0; i < d; i++) {
         p1[i] = P[i+d];
         q1[i] = Q[i+d];
     }
     
-    int *PP = array_op(p1, p2, d-n%2, d);      //add P1 and P2
-    int *QQ = array_op(q1, q2, d-n%2, d);      //add Q1 and Q2
+    int *PP = array_op(p1, p2, d-(n%2), d);      //add P1 and P2
+    int *QQ = array_op(q1, q2, d-(n%2), d);      //add Q1 and Q2
     
     int *R = poly_multi_divcon(p2, q2, d);     //Mult P2*Q2
     int *S = poly_multi_divcon(PP, QQ, d);     //Mult (P1+P2)(Q1+Q2)
     int *T = poly_multi_divcon(p1, q1, d);     //Mult P1*Q1
     
-    int *outt = calloc(((n+1)*2), sizeof(int));
+    int *outt = calloc((n*2), sizeof(int));
     
     //x^2d(R) + x^d(S-R-T) + T
-    for (i = 0; i<d; i++) {
-        //printf("n= %d i=%d T[i]=%d\t\t S-R-T=%d\t\t R[i]=%d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
+    for (i = 0; i<=d+1; i++) {
+        //printf("n= %d i=%d T[i]=%7d S-R-T=%7d R[i]=%7d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
         outt[i] += R[i];
         outt[i+d] += S[i] - R[i] - T[i];
         outt[i+(d*2)] += T[i];
