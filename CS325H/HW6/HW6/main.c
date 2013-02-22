@@ -8,15 +8,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int n;
 int *sol;
-int sol_num=1;
+int sol_num=0;
 
 void compute();
 int check(int x, int y);
-void print_sol();
+void print_sol(int print);
 int if_iso();
+void mirror (int *aSol);
+void rotate (int *aSol);
+int comp_sols(int *a, int *b);
 
 int main(int argc, const char * argv[])
 {
@@ -31,7 +35,7 @@ int main(int argc, const char * argv[])
     }
     
     compute();
-    printf("\nDone. %d Solutions.\n", sol_num-1);
+    printf("\nDone. %d Solutions.\n", sol_num);
     
     return 0;
 }
@@ -43,8 +47,7 @@ void compute() {
         if (check(x, y)) {
             sol[y++] = x;
             if (y==n) {
-                print_sol();
-                sol_num++;
+                print_sol(0);
             } else {
                 x=0;
                 continue;
@@ -76,18 +79,80 @@ int check(int x, int y) {
     return 1;
 }
 
-void print_sol() {
+void print_sol(int print) {
     int x;
     
     if (if_iso()) return;
+    sol_num++;
     
-    printf("Solution %d: ", sol_num);
-    for (x=0; x<n; x++) {
-        printf("%d", sol[x]);
+    if (print){
+        printf("Solution %d: ", sol_num);
+        for (x=0; x<n; x++) {
+            printf("%d", sol[x]);
+        }
+        printf("\n");
     }
-    printf("\n");
 }
 
 int if_iso() {
+    int i;
+    int temp[n];
     
+    //copy sol into temp
+    for (i=0; i<n; i++)
+        temp[i] = sol[i];
+    
+    //rotate 3 times
+    for (i=0; i<3; i++) {
+        rotate(temp);
+        if(!comp_sols(sol, temp)) return 1;
+    }
+    
+    //mirror once
+    mirror(temp);
+    if(!comp_sols(sol, temp)) return 1;
+    
+    //rotate 3 times
+    for (i=0; i<3; i++) {
+        rotate(temp);
+        if(!comp_sols(sol, temp)) return 1;
+    }
+    
+    return 0;
+}
+
+void mirror (int *aSol)
+{
+    int i;
+    for (i=0; i < n; i++)
+        aSol[i] = (n-1) - aSol[i];
+    return;
+}
+
+void rotate (int *aSol)
+{
+    int i;
+    int tmp_sol[n];
+    
+    for (i=0; i < n; i++)
+        tmp_sol[aSol[i]] = i;
+    for (i=0; i < n; i++)
+        aSol[i] = tmp_sol[(n-1) - i];
+    
+    return;
+}
+
+int comp_sols(int *a, int *b)
+{
+    int i;
+    
+    for (i=0; i<n; i++) {
+        if (a[i] < b[i]) {
+            return 0;
+        } else if (a[i] > b[i]) {
+            return 1;
+        }
+    }
+    
+    return -1;
 }
