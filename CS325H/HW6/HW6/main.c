@@ -22,6 +22,7 @@ int main(int argc, const char * argv[])
     
     sol = calloc(n, sizeof(int));
     
+    compute();
     
     return 0;
 }
@@ -38,11 +39,11 @@ int check(int x, int y) {
     int i;
     
     for (i=0; i<n; i++) {
-        if (sol[i] == x)
+        if (sol[i] == x)        //check same row
             return 0;
-        if (sol[i]-(y+i) == x)
+        if (sol[i]-(y+i) == x)  //check diagonal
             return 0;
-        if (sol[i]-(y-i) == x)
+        if (sol[i]-(y-i) == x)  //check diagonal
             return 0;
     }
     
