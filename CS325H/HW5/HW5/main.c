@@ -1,5 +1,7 @@
 //
 //  main.c
+//  Iterative Implimentation and Divide and Conquer Implimentation
+//
 //  divide and conquer algorithm (using only three multiples)
 //  for multiplying polynomials
 //
@@ -92,7 +94,7 @@ int *poly_multi_divcon(int *P, int *Q, int n)
     int *outt = calloc((n*2), sizeof(int));
     
     //x^2d(R) + x^d(S-R-T) + T
-    for (i = 0; i<=n; i++) {
+    for (i = 0; i<n; i++) {
         //printf("n= %d i=%d T[i]=%7d S-R-T=%7d R[i]=%7d\n", n, i, T[i], S[i] - R[i] - T[i], R[i]);
         outt[i] += R[i];
         outt[i+d] += S[i] - R[i] - T[i];
