@@ -41,9 +41,12 @@ int main(int argc, const char * argv[])
     
     //start at x,y
     printf("%d ", cy*n + (cx+1));
-    while (next_move(cy, cx));
+    board[cx][cy] = -1;
+    fflush(stdout);
+    while (next_move(cx, cy));
     
-    //print_board(board, n);
+    printf("\n");
+    print_board(board);
     
     //free board
     free2DintArray(board, n);
@@ -58,23 +61,28 @@ int next_move(int x, int y)
     int move_x[8] = {-1, -1, 1, 1, -2, -2, 2, 2};
     int move_y[8] = {-2, 2, -2, 2, -1, 1, -1, 1};
     int rx, ry;
+    int result_deg;
     
+    //find least degree square
     for (i=0; i<8; i++){
         rx = x + move_x[i];
         ry = y + move_y[i];
         if ((rx >= 0) && (rx < n) && (ry >= 0) && (ry < n)) {
-            if (board[rx][ry] < low_degree && board[rx][ry] != -1) {
+            result_deg = get_degree(rx, ry);
+            if (result_deg < low_degree && board[rx][ry] != -1) {
                 lx = rx;
                 ly = ry;
-                low_degree = board[rx][ry];
+                low_degree = result_deg;
             }
         }
     }
     
+    //if least degree exists, move, else end
     if (lx == -1 && ly == -1) {
         return 0;
     } else {
         printf("%d ", ly*n + (lx+1));
+        fflush(stdout);
         board[lx][ly] = -1;
         cx = lx;
         cy = ly;
@@ -94,7 +102,7 @@ int get_degree(int x, int y)
     for (i=0; i<8; i++) {
         rx = x + move_x[i];
         ry = y + move_y[i];
-        if ((rx >= 0) && (rx < n) && (ry >= 0) && (ry < n))
+        if ((rx >= 0) && (rx < n) && (ry >= 0) && (ry < n) && board[rx][ry] != -1)
             count++;
     }
     
@@ -132,7 +140,7 @@ int **init2DintArray(int x, int y)
     
     iArray = (int**)malloc(x * sizeof(int*));
     for (i = 0; i < x; i++) {
-        iArray[i] = (int*)malloc(y * sizeof(int));
+        iArray[i] = (int*)calloc(y, sizeof(int));
     }
     
     return iArray;
