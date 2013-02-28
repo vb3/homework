@@ -8,7 +8,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 int n;
 int *sol;
@@ -25,8 +24,10 @@ int comp_sols(int *a, int *b);
 int main(int argc, const char * argv[])
 {
     int i;
-    printf("N Queens Solutions\nEnter board size: ");
-    scanf("%d", &n);
+    printf("N Queens Solutions\n"); // Enter board size: ");
+    //scanf("%d", &n);
+    
+    n = atoi(argv[1]);
     
     sol = calloc(n, sizeof(int));
     
