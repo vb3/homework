@@ -16,7 +16,7 @@ void print_board(int **pboard);
 int next_move(int x, int y);
 
 //holds all the degrees
-int **board, cx, cy, n;
+int **board, cx, cy, n, sol_counter=0;
 
 int main(int argc, const char * argv[])
 {
@@ -42,11 +42,18 @@ int main(int argc, const char * argv[])
     //start at x,y
     printf("%d ", cy*n + (cx+1));
     board[cx][cy] = -1;
-    fflush(stdout);
+    sol_counter++;
+    //fflush(stdout);
     while (next_move(cx, cy));
     
     printf("\n");
-    print_board(board);
+    //print_board(board);
+    if (sol_counter == n*n) {
+        printf("Found complete solution.\n");
+    } else {
+        printf("Did not find complete solution.\n");
+    }
+    
     
     //free board
     free2DintArray(board, n);
@@ -82,8 +89,9 @@ int next_move(int x, int y)
         return 0;
     } else {
         printf("%d ", ly*n + (lx+1));
-        fflush(stdout);
+        //fflush(stdout); w
         board[lx][ly] = -1;
+        sol_counter++;
         cx = lx;
         cy = ly;
         return 1;
