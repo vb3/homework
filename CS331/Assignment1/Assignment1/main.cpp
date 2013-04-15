@@ -15,6 +15,11 @@
 
 using namespace std;
 
+struct node_parent {
+	int lcan, lmis, rcan, rmis;
+	bool lboat, rboat;
+};
+
 struct node {
 	int lcan, lmis, rcan, rmis;
 	bool lboat, rboat;
@@ -40,7 +45,6 @@ struct node {
 		sum.lboat = !(*this).lboat;
 		sum.rboat = !(*this).rboat;
 		sum.parent = this;
-		
 		return sum;
 	}
 };
@@ -52,11 +56,13 @@ const node r_actions[5] = {{0,1,0,-1,NULL,NULL,NULL}, {0,2,0,-2,NULL,NULL,NULL},
 const node l_actions[5] = {{0,-1,0,1,NULL,NULL,NULL}, {0,-2,0,2,NULL,NULL,NULL},
 						   {-1,0,1,0,NULL,NULL,NULL}, {-1,-1,1,1,NULL,NULL,NULL},
 						   {-2,0,2,0,NULL,NULL,NULL}};
-
+int counter=0;
 
 list<node> graph_search(node start, node goal);
-list<node> expand(node myNode);
+list<node> expand(node *myNode);
 bool validate_node(node myNode);
+
+
 
 int main(int argc, const char * argv[])
 {
@@ -74,7 +80,7 @@ int main(int argc, const char * argv[])
 		soln.pop_front();
 	}
 	
-	printf("done\n");
+	printf("done. counter=%d\n", counter);
 	return 0;
 }
 
@@ -84,7 +90,6 @@ list<node> graph_search(node start, node goal)
 	list<node> closed;
 	list<node> solution;
 	node current;
-	int counter=0;
 	
 	fringe.push_front(start);
 	while (!fringe.empty()) {
@@ -97,8 +102,8 @@ list<node> graph_search(node start, node goal)
 			while (!(current == start)) {
 				solution.push_front(current);
 				current = *current.parent;
-				printf("%d, %d, %d\n%d, %d, %d\n\n", solution.front().lmis, solution.front().lcan, solution.front().lboat,
-					   solution.front().rmis, solution.front().rcan, solution.front().rboat);
+				//printf("%d, %d, %d\n%d, %d, %d\n\n", solution.front().lmis, solution.front().lcan, solution.front().lboat,
+					   //solution.front().rmis, solution.front().rcan, solution.front().rboat);
 			}
 			solution.push_front(start);
 			
@@ -109,21 +114,23 @@ list<node> graph_search(node start, node goal)
 		if(find(closed.begin(), closed.end(), current) == closed.end()) {
 			closed.push_front(current);
 			
+			node *savedNode = new node;
+			*savedNode = current;
+			
 			//add all expanded nodes to fringe
-			fringe.splice(fringe.begin(), expand(current));
-			//fringe.insert(fringe.begin(), expand(current).begin(), expand(current).end());
+			fringe.splice(fringe.begin(), expand(savedNode));
 		}
 	}
 	
 	return fringe;
 }
 
-list<node> expand(node myNode) {
+list<node> expand(node *myNode) {
 	list<node> successors;
 	node s;
 	int i;
 	for (i=0; i<5; i++) {
-		s = myNode + (myNode.lboat ? l_actions[i] : r_actions[i]);
+		s = (*myNode) + (myNode->lboat ? l_actions[i] : r_actions[i]);
 		
 		if (validate_node(s)) successors.push_front(s);
 	}
