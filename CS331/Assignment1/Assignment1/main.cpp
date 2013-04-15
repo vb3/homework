@@ -9,16 +9,12 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <algorithm>
 #include <stdio.h>
 
 using namespace std;
-
-struct node_parent {
-	int lcan, lmis, rcan, rmis;
-	bool lboat, rboat;
-};
 
 struct node {
 	int lcan, lmis, rcan, rmis;
@@ -49,7 +45,7 @@ struct node {
 	}
 };
 
-//actions
+//actions {lcan, lmis, rcan, rmis, lboat, rboat, *parent}
 const node r_actions[5] = {{0,1,0,-1,NULL,NULL,NULL}, {0,2,0,-2,NULL,NULL,NULL},
 						   {1,0,-1,0,NULL,NULL,NULL}, {1,1,-1,-1,NULL,NULL,NULL},
 						   {2,0,-2,0,NULL,NULL,NULL}};
@@ -66,10 +62,28 @@ bool validate_node(node myNode);
 
 int main(int argc, const char * argv[])
 {
+	printf("Computing...\n");
 	list<node> soln;
-	printf("test\n");
+	ifstream my_input;
+	int lcan, lmis, rcan, rmis;
+	bool lboat, rboat;
+	string test_input;
 	
-	node start = {3,3,0,0,true,false,NULL};
+	
+	my_input.open("/Users/vb2303/Documents/OSU/GitHub_homework/CS331/Assignment1/Assignment1/start.txt");
+	getline(my_input, test_input);
+	stringstream ss(test_input);
+	ss >> lmis >> lcan >> lboat;
+	
+	
+	my_input >> lmis; // >> lcan >> lboat;
+	my_input >> lcan;
+	my_input >> lboat;
+	my_input >> rmis;
+	my_input >> rcan;
+	my_input >> rboat;
+
+	node start = {lcan,lmis,rcan,rmis,lboat,rboat,NULL};
 	node goal = {0,0,3,3,false,true,NULL};
 	
 	soln = graph_search(start, goal);
