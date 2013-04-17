@@ -10,7 +10,7 @@
 //	iddfs (for iterative deepening depth-first search)
 //	astar (for A-Star search below)
 //
-//  Created by Vinay Bikkina on 4/14/13.
+//  Created by Vinay Bikkina and Tudor Marcu on 4/14/13.
 //  Copyright (c) 2013 Vinay Bikkina. All rights reserved.
 //
 
@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <sstream>
 #include <string>
-#include <vector>
+#include <queue>
 
 using namespace std;
 
@@ -56,6 +56,16 @@ struct node {
 struct depth_node {
 	node *myNode;
 	int depth;
+	
+	friend bool operator< (const depth_node& lhs, const depth_node& rhs)
+	{
+		return lhs.depth>rhs.depth;
+	}
+	
+	bool operator() (const depth_node& lhs, const depth_node& rhs)
+    {
+        return lhs.depth>rhs.depth;
+    }
 };
 
 //actions {lcan, lmis, rcan, rmis, lboat, rboat, *parent}
@@ -69,9 +79,12 @@ int counter=0;
 
 list<node> graph_search_bfs_dfs(node start, node goal, bool dfs);
 list<node> graph_search_iddfs(depth_node start, depth_node goal, int depth);
+list<node> graph_search_astar(depth_node start, depth_node goal);
 list<node> expand(node *myNode);
 list<depth_node> depth_expand(node *myNode, int depth);
+list<depth_node> astar_expand(node *myNode, int cost);
 bool validate_node(node myNode);
+int heuristic_cost_estimate(node start, node goal);
 
 
 
@@ -140,7 +153,15 @@ int main(int argc, const char * argv[])
 		//cout << "test_depth: " << test_depth << endl;
 	}
 	else if (mode == "astar"){
+		depth_node myStart;
+		depth_node myGoal;
 		
+		myStart.myNode = new node(start);
+		myStart.depth = 0;
+		myGoal.myNode = new node(goal);
+		myGoal.depth = 0;
+		
+		soln = graph_search_astar(myStart, myGoal);
 	}
 	else {
 		cout << "ERROR: Not valid mode '" << mode << "'." << endl;
@@ -150,22 +171,25 @@ int main(int argc, const char * argv[])
 	outfile << "in " << mode << " mode." << endl << endl;
 	
 	//print solution
+	int step_counter=1;
 	while (!soln.empty()) {
-		cout << soln.front().lmis << ", ";
-		cout << soln.front().lcan << ", ";
-		cout << soln.front().lboat << endl;
+		cout << "Step " << step_counter << endl;
+		cout << "Miss: " << soln.front().lmis << ", ";
+		cout << "Cann: " << soln.front().lcan << ", ";
+		cout << "Boat: " << soln.front().lboat << endl;
 		
-		cout << soln.front().rmis << ", ";
-		cout << soln.front().rcan << ", ";
-		cout << soln.front().rboat << endl << endl;
+		cout << "Miss: " << soln.front().rmis << ", ";
+		cout << "Cann: " << soln.front().rcan << ", ";
+		cout << "Boat: " << soln.front().rboat << endl << endl;
 		
-		outfile << soln.front().lmis << ", ";
-		outfile << soln.front().lcan << ", ";
-		outfile << soln.front().lboat << endl;
+		outfile << "Step " << step_counter++ << endl;
+		outfile << "Miss: " << soln.front().lmis << ", ";
+		outfile << "Cann: " << soln.front().lcan << ", ";
+		outfile << "Boat: " << soln.front().lboat << endl;
 		
-		outfile << soln.front().rmis << ", ";
-		outfile << soln.front().rcan << ", ";
-		outfile << soln.front().rboat << endl << endl;
+		outfile << "Miss: " << soln.front().rmis << ", ";
+		outfile << "Cann: " << soln.front().rcan << ", ";
+		outfile << "Boat: " << soln.front().rboat << endl << endl;
 
 		soln.pop_front();
 	}
@@ -180,6 +204,7 @@ list<node> graph_search_bfs_dfs(node start, node goal, bool dfs)
 	list<node> fringe;
 	list<node> closed;
 	list<node> solution;
+	list<node> expanded;
 	node current;
 	
 	fringe.push_front(start);
@@ -212,7 +237,9 @@ list<node> graph_search_bfs_dfs(node start, node goal, bool dfs)
 			*savedNode = current;
 			
 			//add all expanded nodes to fringe
-			fringe.splice(fringe.begin(), expand(savedNode));
+			//fringe.splice(fringe.begin(), expand(savedNode));
+			expanded = expand(savedNode);
+			fringe.insert(fringe.begin(), expanded.begin(), expanded.end());
 		}
 	}
 	
@@ -224,6 +251,7 @@ list<node> graph_search_iddfs(depth_node start, depth_node goal, int depth)
 	list<depth_node> fringe;
 	list<node> closed;
 	list<node> solution;
+	list<depth_node> expanded;
 	depth_node current;
 	
 	counter = 0;
@@ -253,8 +281,62 @@ list<node> graph_search_iddfs(depth_node start, depth_node goal, int depth)
 			*savedNode = *current.myNode;
 			
 			//add all expanded nodes to fringe
-			if (depth > current.depth)
-				fringe.splice(fringe.begin(), depth_expand(savedNode, current.depth));
+			if (depth > current.depth){
+				expanded = depth_expand(savedNode, current.depth);
+				fringe.insert(fringe.begin(), expanded.begin(), expanded.end());
+				//fringe.splice(fringe.begin(), depth_expand(savedNode, current.depth));
+			}
+				
+		}
+	}
+	
+	return solution;
+}
+
+list<node> graph_search_astar(depth_node start, depth_node goal)
+{
+	priority_queue<depth_node> fringe;
+	list<node> closed;
+	list<node> solution;
+	list<depth_node> tmp_expanded;
+	depth_node current;
+	//int g_score=0;
+	
+	counter = 0;
+	
+	fringe.push(start);
+	while (!fringe.empty()) {
+		current = fringe.top();
+		fringe.pop();
+		
+		if (*current.myNode == *goal.myNode) {
+			node soln = *current.myNode;
+			while (!(soln == *start.myNode)) {
+				solution.push_front(soln);
+				soln = *soln.parent;
+			}
+			solution.push_front(*start.myNode);
+			
+			return solution;
+		}
+		
+		//if solution.front() is not in closed
+		if(find(closed.begin(), closed.end(), *current.myNode) == closed.end()) {
+			counter++;
+			closed.push_front(*current.myNode);
+			
+			node *savedNode = new node;
+			*savedNode = *current.myNode;
+			
+			//add all expanded nodes to fringe
+			tmp_expanded = astar_expand(savedNode, current.depth);
+			while (!tmp_expanded.empty()) {
+				depth_node tmp;
+				tmp.myNode = tmp_expanded.front().myNode;
+				tmp.depth += heuristic_cost_estimate(*tmp.myNode, *goal.myNode);
+				fringe.push(tmp);
+				tmp_expanded.pop_front();
+			}
 		}
 	}
 	
@@ -264,6 +346,7 @@ list<node> graph_search_iddfs(depth_node start, depth_node goal, int depth)
 list<node> expand(node *myNode) {
 	list<node> successors;
 	node s;
+	
 	int i;
 	for (i=0; i<5; i++) {
 		s = (*myNode) + (myNode->lboat ? l_actions[i] : r_actions[i]);
@@ -290,6 +373,24 @@ list<depth_node> depth_expand(node *myNode, int depth) {
 	return successors;
 }
 
+list<depth_node> astar_expand(node *myNode, int cost) {
+	list<depth_node> successors;
+	depth_node s;
+	
+	int i;
+	for (i=0; i<5; i++) {
+		s.myNode = new node;
+		
+		*s.myNode = (*myNode) + (myNode->lboat ? l_actions[i] : r_actions[i]);
+		if (validate_node(*s.myNode)) {
+			s.depth = cost + heuristic_cost_estimate(*myNode, *s.myNode);
+			successors.push_front(s);
+		}
+	}
+	
+	return successors;
+}
+
 bool validate_node(node myNode){
 	//check if everything is positive
 	if (myNode.lcan < 0 || myNode.lmis < 0 ||
@@ -306,6 +407,6 @@ bool validate_node(node myNode){
 	return true;
 }
 
-
-
-
+int heuristic_cost_estimate(node start, node goal) {
+	return ((abs(goal.lmis-start.lmis) + abs(goal.lcan-start.lcan))*2)-1;
+}
