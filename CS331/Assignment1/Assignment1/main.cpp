@@ -4,7 +4,11 @@
 //  Cannibals and Missionaries puzzle
 //
 //	exec by passing parameters < initial state file > < goal state file > < mode > < output file >
-//
+//	The mode argument is either:
+//	bfs (for breadth-first search)
+//	dfs (for depth-first search)
+//	iddfs (for iterative deepening depth-first search)
+//	astar (for A-Star search below)
 //
 //  Created by Vinay Bikkina on 4/14/13.
 //  Copyright (c) 2013 Vinay Bikkina. All rights reserved.
@@ -14,7 +18,6 @@
 #include <fstream>
 #include <list>
 #include <algorithm>
-#include <stdio.h>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -50,6 +53,11 @@ struct node {
 	}
 };
 
+struct depth_node {
+	node *myNode;
+	int depth;
+};
+
 //actions {lcan, lmis, rcan, rmis, lboat, rboat, *parent}
 const node r_actions[5] = {{0,1,0,-1,NULL,NULL,NULL}, {0,2,0,-2,NULL,NULL,NULL},
 						   {1,0,-1,0,NULL,NULL,NULL}, {1,1,-1,-1,NULL,NULL,NULL},
@@ -60,7 +68,9 @@ const node l_actions[5] = {{0,-1,0,1,NULL,NULL,NULL}, {0,-2,0,2,NULL,NULL,NULL},
 int counter=0;
 
 list<node> graph_search_bfs_dfs(node start, node goal, bool dfs);
+list<node> graph_search_iddfs(depth_node start, depth_node goal, int depth);
 list<node> expand(node *myNode);
+list<depth_node> depth_expand(node *myNode, int depth);
 bool validate_node(node myNode);
 
 
@@ -68,19 +78,16 @@ bool validate_node(node myNode);
 int main(int argc, const char * argv[])
 {
 	//get all command line arguments
-	string startfile, goalfile, mode, outfile;
-	startfile = argv[1];
-	goalfile = argv[2];
-	mode = argv[3];
-	outfile = argv[4];
-	
-	printf("Computing...\n");
 	list<node> soln;
-	ifstream infile_start(startfile);
-	ifstream infile_goal(goalfile);
+	ifstream infile_start(argv[1]), infile_goal(argv[2]);
+	ofstream outfile(argv[4]);
 	string line;
 	node start, goal;
 	istringstream *iss;
+	string mode = argv[3];
+	
+	cout << "Computing... ";
+	outfile << "Computing... ";
 	
 	//fill start and goal nodes
 	getline(infile_start, line);
@@ -111,16 +118,60 @@ int main(int argc, const char * argv[])
 	infile_start.close();
 	
 	//compute
-	soln = graph_search_bfs_dfs(start, goal, false);
+	if (mode == "bfs") {
+		soln = graph_search_bfs_dfs(start, goal, false);
+	}
+	else if (mode == "dfs") {
+		soln = graph_search_bfs_dfs(start, goal, true);
+	}
+	else if (mode == "iddfs"){
+		depth_node myStart;
+		depth_node myGoal;
+		int test_depth = 0;
+		
+		myStart.myNode = new node(start);
+		myStart.depth = 0;
+		myGoal.myNode = new node(goal);
+		myGoal.depth = 0;
+		
+		while (soln.empty())
+			soln = graph_search_iddfs(myStart, myGoal, test_depth++);
+		
+		//cout << "test_depth: " << test_depth << endl;
+	}
+	else if (mode == "astar"){
+		
+	}
+	else {
+		cout << "ERROR: Not valid mode '" << mode << "'." << endl;
+		exit(-1);
+	}
+	cout << "in " << mode << " mode." << endl << endl;
+	outfile << "in " << mode << " mode." << endl << endl;
 	
 	//print solution
 	while (!soln.empty()) {
-		printf("%d, %d, %d\n", soln.front().lmis, soln.front().lcan, soln.front().lboat);
-		printf("%d, %d, %d\n\n", soln.front().rmis, soln.front().rcan, soln.front().rboat);
+		cout << soln.front().lmis << ", ";
+		cout << soln.front().lcan << ", ";
+		cout << soln.front().lboat << endl;
+		
+		cout << soln.front().rmis << ", ";
+		cout << soln.front().rcan << ", ";
+		cout << soln.front().rboat << endl << endl;
+		
+		outfile << soln.front().lmis << ", ";
+		outfile << soln.front().lcan << ", ";
+		outfile << soln.front().lboat << endl;
+		
+		outfile << soln.front().rmis << ", ";
+		outfile << soln.front().rcan << ", ";
+		outfile << soln.front().rboat << endl << endl;
+
 		soln.pop_front();
 	}
 	
-	printf("done. counter=%d\n", counter);
+	cout << "done. counter=" << counter << endl;
+	outfile << "done. counter=" << counter << endl;
 	return 0;
 }
 
@@ -134,12 +185,12 @@ list<node> graph_search_bfs_dfs(node start, node goal, bool dfs)
 	fringe.push_front(start);
 	while (!fringe.empty()) {
 		if (dfs) {
-			current = fringe.back();
-			fringe.pop_back();
-		}
-		else {
 			current = fringe.front();
 			fringe.pop_front();
+		}
+		else {
+			current = fringe.back();
+			fringe.pop_back();
 		}
 		
 		if (current == goal) {
@@ -168,6 +219,48 @@ list<node> graph_search_bfs_dfs(node start, node goal, bool dfs)
 	return fringe;
 }
 
+list<node> graph_search_iddfs(depth_node start, depth_node goal, int depth)
+{
+	list<depth_node> fringe;
+	list<node> closed;
+	list<node> solution;
+	depth_node current;
+	
+	counter = 0;
+	
+	fringe.push_front(start);
+	while (!fringe.empty()) {
+		current = fringe.front();
+		fringe.pop_front();
+		
+		if (*current.myNode == *goal.myNode) {
+			node soln = *current.myNode;
+			while (!(soln == *start.myNode)) {
+				solution.push_front(soln);
+				soln = *soln.parent;
+			}
+			solution.push_front(*start.myNode);
+			
+			return solution;
+		}
+		
+		//if solution.front() is not in closed
+		if(find(closed.begin(), closed.end(), *current.myNode) == closed.end()) {
+			counter++;
+			closed.push_front(*current.myNode);
+			
+			node *savedNode = new node;
+			*savedNode = *current.myNode;
+			
+			//add all expanded nodes to fringe
+			if (depth > current.depth)
+				fringe.splice(fringe.begin(), depth_expand(savedNode, current.depth));
+		}
+	}
+	
+	return solution;
+}
+
 list<node> expand(node *myNode) {
 	list<node> successors;
 	node s;
@@ -176,6 +269,22 @@ list<node> expand(node *myNode) {
 		s = (*myNode) + (myNode->lboat ? l_actions[i] : r_actions[i]);
 		
 		if (validate_node(s)) successors.push_front(s);
+	}
+	
+	return successors;
+}
+
+list<depth_node> depth_expand(node *myNode, int depth) {
+	list<depth_node> successors;
+	depth_node s;
+	s.depth = depth + 1;
+	
+	int i;
+	for (i=0; i<5; i++) {
+		s.myNode = new node;
+		
+		*s.myNode = (*myNode) + (myNode->lboat ? l_actions[i] : r_actions[i]);
+		if (validate_node(*s.myNode)) successors.push_front(s);
 	}
 	
 	return successors;
