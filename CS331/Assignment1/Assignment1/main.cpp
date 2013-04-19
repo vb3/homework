@@ -339,12 +339,13 @@ list<node> graph_search_astar(depth_node start, depth_node goal)
 			while (!tmp_expanded.empty()) {
 				depth_node tmp;
 				tmp.myNode = tmp_expanded.front().myNode;
+				tmp.depth = tmp_expanded.front().depth;
 				
-				if (tmp.depth < current.depth){
+				//if (tmp.depth < current.depth){
 					//f_score
 					tmp.depth += heuristic_cost_estimate(*tmp.myNode, *goal.myNode);
 					fringe.push(tmp);
-				}
+				//}
 				tmp_expanded.pop_front();
 			}
 		}
@@ -394,7 +395,7 @@ list<depth_node> astar_expand(node *myNode, int cost) {
 		*s.myNode = (*myNode) + (myNode->lboat ? l_actions[i] : r_actions[i]);
 		if (validate_node(*s.myNode)) {
 			//tentative_g_score
-			s.depth = cost + heuristic_cost_estimate(*myNode, *s.myNode);
+			s.depth = 1; //cost + heuristic_cost_estimate(*myNode, *s.myNode);
 			successors.push_front(s);
 		}
 	}
