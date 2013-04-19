@@ -77,6 +77,7 @@ const node l_actions[5] = {{0,-1,0,1,NULL,NULL,NULL}, {0,-2,0,2,NULL,NULL,NULL},
 						   {-2,0,2,0,NULL,NULL,NULL}};
 int counter=0;
 
+void print_file_to_screen(string path);
 list<node> graph_search_bfs_dfs(node start, node goal, bool dfs);
 list<node> graph_search_iddfs(depth_node start, depth_node goal, int depth);
 list<node> graph_search_astar(depth_node start, depth_node goal);
@@ -99,7 +100,6 @@ int main(int argc, const char * argv[])
 	istringstream *iss;
 	string mode = argv[3];
 	
-	cout << "Computing... ";
 	outfile << "Computing... ";
 	
 	//fill start and goal nodes
@@ -147,10 +147,8 @@ int main(int argc, const char * argv[])
 		myGoal.myNode = new node(goal);
 		myGoal.depth = 0;
 		
-		while (soln.empty())
+		while (soln.empty() && test_depth < 2048)
 			soln = graph_search_iddfs(myStart, myGoal, test_depth++);
-		
-		//cout << "test_depth: " << test_depth << endl;
 	}
 	else if (mode == "astar"){
 		depth_node myStart;
@@ -164,39 +162,47 @@ int main(int argc, const char * argv[])
 		soln = graph_search_astar(myStart, myGoal);
 	}
 	else {
-		cout << "ERROR: Not valid mode '" << mode << "'." << endl;
+		outfile << "ERROR: Not valid mode \"" << mode << "\"." << endl;
+		outfile << "Choose from \"bfs\" \"dfs\" \"iddfs\" or \"astar\"" << endl;
 		exit(-1);
 	}
-	cout << "in " << mode << " mode." << endl << endl;
 	outfile << "in " << mode << " mode." << endl << endl;
 	
-	//print solution
 	int step_counter=1;
-	while (!soln.empty()) {
-		cout << "Step " << step_counter << endl;
-		cout << "Miss: " << soln.front().lmis << ", ";
-		cout << "Cann: " << soln.front().lcan << ", ";
-		cout << "Boat: " << soln.front().lboat << endl;
-		
-		cout << "Miss: " << soln.front().rmis << ", ";
-		cout << "Cann: " << soln.front().rcan << ", ";
-		cout << "Boat: " << soln.front().rboat << endl << endl;
-		
-		outfile << "Step " << step_counter++ << endl;
-		outfile << "Miss: " << soln.front().lmis << ", ";
-		outfile << "Cann: " << soln.front().lcan << ", ";
-		outfile << "Boat: " << soln.front().lboat << endl;
-		
-		outfile << "Miss: " << soln.front().rmis << ", ";
-		outfile << "Cann: " << soln.front().rcan << ", ";
-		outfile << "Boat: " << soln.front().rboat << endl << endl;
+	if (soln.empty()) {
+		outfile << "No solution found." << endl;
+	} else {
+		//print solution
+		while (!soln.empty()) {
+			outfile << "Step " << step_counter++ << endl;
+			outfile << "Miss: " << soln.front().lmis << ", ";
+			outfile << "Cann: " << soln.front().lcan << ", ";
+			outfile << "Boat: " << soln.front().lboat << endl;
+			
+			outfile << "Miss: " << soln.front().rmis << ", ";
+			outfile << "Cann: " << soln.front().rcan << ", ";
+			outfile << "Boat: " << soln.front().rboat << endl << endl;
 
-		soln.pop_front();
+			soln.pop_front();
+		}
 	}
 	
-	cout << "done. counter=" << counter << endl;
 	outfile << "done. counter=" << counter << endl;
+	
+	outfile.close();
+	print_file_to_screen(argv[4]);
 	return 0;
+}
+
+void print_file_to_screen(string path)
+{
+    ifstream fin(path);
+    string temp;
+
+    while(getline(fin, temp))
+        cout << temp << endl;
+	
+    fin.close();
 }
 
 list<node> graph_search_bfs_dfs(node start, node goal, bool dfs)
@@ -333,8 +339,12 @@ list<node> graph_search_astar(depth_node start, depth_node goal)
 			while (!tmp_expanded.empty()) {
 				depth_node tmp;
 				tmp.myNode = tmp_expanded.front().myNode;
-				tmp.depth += heuristic_cost_estimate(*tmp.myNode, *goal.myNode);
-				fringe.push(tmp);
+				
+				if (tmp.depth < current.depth){
+					//f_score
+					tmp.depth += heuristic_cost_estimate(*tmp.myNode, *goal.myNode);
+					fringe.push(tmp);
+				}
 				tmp_expanded.pop_front();
 			}
 		}
@@ -383,6 +393,7 @@ list<depth_node> astar_expand(node *myNode, int cost) {
 		
 		*s.myNode = (*myNode) + (myNode->lboat ? l_actions[i] : r_actions[i]);
 		if (validate_node(*s.myNode)) {
+			//tentative_g_score
 			s.depth = cost + heuristic_cost_estimate(*myNode, *s.myNode);
 			successors.push_front(s);
 		}
